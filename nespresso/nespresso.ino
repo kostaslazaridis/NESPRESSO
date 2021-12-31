@@ -48,7 +48,11 @@ PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
 
 void setup() {
    Serial.begin(9600);
-   
+
+   /* Setup pin 2,3 as an interrupt and attach handler. */
+   attachInterrupt(digitalPinToInterrupt(small_cup_buttonPin), small_cup, RISING);
+   attachInterrupt(digitalPinToInterrupt(big_cup_buttonPin)  , big_cup  , RISING);
+  
    windowStartTime = millis();
    previousMillis = millis();
 
@@ -86,24 +90,6 @@ void loop() {
         warmUp();
         previousMillis = millis();
     }
-    else if(small_cup_button() == HIGH){
-      Serial.println("small_cup");
-      resetSmallCupButton();
-      
-      digitalWrite(small_cup_led,HIGH);      
-      extrude_Cofee(small_cup_time);
-      digitalWrite(small_cup_led,LOW);      
-      previousMillis = millis();
-    }
-    else if(big_cup_button() == HIGH){
-      Serial.println("big_cup");
-      resetBigCupButton();
-      
-      digitalWrite(big_cup_led,HIGH);  
-      extrude_Cofee(big_cup_time);
-      digitalWrite(big_cup_led,LOW);  
-      previousMillis = millis();
-    }   
     else{
       keepItWarm();
     }
